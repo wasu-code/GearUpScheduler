@@ -4,14 +4,48 @@ const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const User = require("./schemas/user");
-
-app.use(bodyParser.json());
+const passport = require("passport");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
 
 dotenv.config();
 
 const link_database = process.env.DATABASE_LINK;
+const secret_key = process.env.SECRET_KEY;
 
+//------------Controllers Imports-----------------------
+const logoutHandler = require("./controllers/logout");
+const loginHandler = require("./controllers/login");
+const registerHandler = require("./controllers/register");
+
+//------------Middleware-----------------------
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+
+app.use(
+  session({
+    secret: secret_key,
+    resave: true,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 48 * 60 * 60 * 1000,
+    },
+  })
+);
+
+app.use(cookieParser(secret_key));
+app.use(passport.initialize());
+app.use(passport.session());
+require("./passportConfig")(passport);
+
+//------------Database-----------------------
 mongoose
   .connect(link_database, {
     useNewUrlParser: true,
@@ -23,6 +57,14 @@ mongoose
   .catch((err) => {
     console.error("Error connecting to MongoDB Atlas:", err);
   });
+
+//---------------------Routes----------------------------
+app.post("/login", loginHandler);
+app.post("/register", registerHandler);
+app.post("/logout", logoutHandler);
+app.get("/user", (req, res) => {
+  res.send(req.user);
+});
 
 app.listen(5000, () => {
   console.log(`Example app listening on port 5000`);
