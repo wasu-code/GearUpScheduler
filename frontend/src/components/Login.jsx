@@ -12,58 +12,20 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useState } from "react"
+import { useAuth } from '@/context/AuthContext';
 
 function Login() {
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [messageBox, setMessageBox] = useState([]);
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const { isLoaded, login } = useAuth();
 
   const handleLogin = async () => {
-
-    setLoading(true);
-    try {
-      // Make API call for login 
-      const response = await fetch('api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
-
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        const json = await response.json();
-        // Handle JSON response
-        console.log('JSON response:', json);
-        setMessageBox([]);
-        if(json.errors) {
-          const errorMessages = json.errors.map(error => error.msg);
-          setMessageBox(errorMessages);
-        } else if(json.message || json.error) {
-          const messageArray = [];
-          messageArray.push(json.message)
-          messageArray.push(json.error)
-          setMessageBox(messageArray);
-        }
-      } else {
-        const text = await response.text();
-        // Handle non-JSON response
-        console.log('Text response:', text);
-      }
-      // Handle the response from the API
-      //if user in res setUser and close popup
-    } catch (error) {
-      console.error('ERR:', error);
-    } finally {
-      setLoading(false);
-    }
+    setLoading(true)
+    let messages = await login(email, password);
+    setMessageBox(messages)
+    setLoading(false)
   };
 
   return (

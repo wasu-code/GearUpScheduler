@@ -1,6 +1,7 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 import { HomePage, HomeLayout } from "./pages/HomePage";
+import Login from "./components/Login";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 
@@ -23,8 +24,8 @@ function App() {
           <Route path="" element={<UserDashboardPage />} />
         </Route> */}
         <Route path="/" element={<HomeLayout />}>
-          {/* <Route path="/login" element={<LoginPage />} /> */}
           <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
         </Route>
         <Route path="*" element={<h1>Nie znaleźliśmy takiej strony</h1>}></Route>
       </Routes>
