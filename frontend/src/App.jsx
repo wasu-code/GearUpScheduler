@@ -26,6 +26,7 @@ function App() {
           {/* <Route path="/login" element={<LoginPage />} /> */}
           <Route path="/" element={<HomePage />} />
         </Route>
+        <Route path="*" element={<h1>Nie znaleźliśmy takiej strony</h1>}></Route>
       </Routes>
     </Router>
   );
