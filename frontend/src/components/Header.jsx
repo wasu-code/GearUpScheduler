@@ -7,7 +7,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
+  DialogFooter,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button"
 import Login from "@/components/Login";
 
 function Header() {
@@ -31,8 +34,15 @@ function Header() {
                 <DialogDescription>
                   Logowanie
                 </DialogDescription>
-                <Login />
               </DialogHeader>
+              <Login />
+              <DialogFooter className="sm:justify-start">
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary" id="closeLoginButton" className="hidden">
+                    Zamknij
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
             </DialogContent>
           </Dialog>
         </span>

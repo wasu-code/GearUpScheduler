@@ -13,11 +13,11 @@ function AuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    setUser({
+    /*setUser({
       id: 1,
       name: "Test",
       role: "USER",
-    });
+    });*/
 
     setLoaded(true);
   }, []);
@@ -48,16 +48,19 @@ function AuthContextProvider({ children }) {
           let messages = [];
 
           if (Array.isArray(data.errors)) {
-              const errorMessages = data.errors.map(error => error.msg);
-              messages = errorMessages;
+            const errorMessages = data.errors.map(error => error.msg);
+            messages = errorMessages;
           } else if (data.message || data.error) {
-              const messageArray = [data.message, data.error].filter(Boolean);
-              messages = messageArray;
+            const messageArray = [data.message, data.error].filter(Boolean);
+            messages = messageArray;
           }
 
           if (data.user) {
-              const u = data.user;
-              setUser({ id: u._id, name: u.name + " " + u.surname, role: 'USER' });
+            const u = data.user;
+            setUser({ id: u._id, name: u.name + " " + u.surname, role: 'USER' });
+            
+            let closeLoginButton = document.querySelector('#closeLoginButton');
+            closeLoginButton.click(); 
           }
 
           resolve(messages);
