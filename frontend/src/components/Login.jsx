@@ -27,7 +27,7 @@ function Login() {
   const [repeatedPassword, setRepeatedPassword] = useState('')
 
   const [messageBox, setMessageBox] = useState([]);
-  const { isLoaded, login } = useAuth();
+  const { login, register } = useAuth();
 
   const handleLogin = async () => {
     setLoading(true)
