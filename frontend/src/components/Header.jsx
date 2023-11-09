@@ -10,11 +10,24 @@ import {
   DialogClose,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import Login from "@/components/Login";
+import { useModal } from "@/context/ModalContext";
+import { Link } from "react-router-dom";
 
 function Header() {
   const { user } = useAuth();
+  const { loginVisible, registerVisible, setLoginVisible, setRegisterVisible } =
+    useModal();
+
+  const handleOpenChange = (visible) => {
+    setLoginVisible(loginVisible && visible);
+    setRegisterVisible(registerVisible && visible);
+
+    if (!loginVisible && !registerVisible) {
+      setLoginVisible(true);
+    }
+  };
 
   return (
     <header className="absolute inset-x-0 top-0 z-50 bg-slate-900">
@@ -22,23 +35,40 @@ function Header() {
         className="flex items-center justify-between p-6 lg:px-8"
         aria-label="Global"
       >
-        <a href="#" className="text-sm font-semibold leading-6 text-slate-100">
-          {user ? `Zalogowany: ${user.name}` : "Zaloguj się"}
-        </a>
         <span className="text-sm font-semibold leading-6 text-slate-100">
-          <Dialog>
-            <DialogTrigger>Zaloguj</DialogTrigger>
+          {/* {user && `Zalogowany: ${user.name}`} */}
+          {user && (
+            <Link to={user.role === "ADMIN" ? "/mechanic" : "/profile"}>
+              <Button type="button" variant="secondary">
+                Sprawdź wizyty
+              </Button>
+            </Link>
+          )}
+        </span>
+        <span className="text-sm font-semibold leading-6 text-slate-100">
+          <Dialog
+            open={loginVisible || registerVisible}
+            onOpenChange={handleOpenChange}
+          >
+            <DialogTrigger asChild>
+              <Button type="button" variant="secondary">
+                Zaloguj się
+              </Button>
+            </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Witamy</DialogTitle>
-                <DialogDescription>
-                  Logowanie
-                </DialogDescription>
+                <DialogDescription>Logowanie</DialogDescription>
               </DialogHeader>
               <Login />
               <DialogFooter className="sm:justify-start">
                 <DialogClose asChild>
-                  <Button type="button" variant="secondary" id="closeLoginButton" className="hidden">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    id="closeLoginButton"
+                    className="hidden"
+                  >
                     Zamknij
                   </Button>
                 </DialogClose>
@@ -46,7 +76,6 @@ function Header() {
             </DialogContent>
           </Dialog>
         </span>
-
       </nav>
     </header>
   );

@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 
 import { useAuth } from "./context/AuthContext";
+import ModalContextProvider from "./context/ModalContext";
 
 function App() {
   const { isLoaded, user } = useAuth();
@@ -16,19 +17,31 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        {/* <Route path="/dashboard/admin">
+      <ModalContextProvider>
+        <Routes>
+          {/* <Route path="/dashboard/admin">
           <Route path="" element={<AdminDashboardPage />} />
         </Route>
         <Route path="/dashboard">
           <Route path="" element={<UserDashboardPage />} />
         </Route> */}
-        <Route path="/" element={<HomeLayout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<Login />} />
-        </Route>
-        <Route path="*" element={<h1>Nie znaleźliśmy takiej strony</h1>}></Route>
-      </Routes>
+          <Route path="/" element={<HomeLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route
+              path="/login"
+              element={<HomePage modalVisible={"login"} />}
+            />
+            <Route
+              path="/register"
+              element={<HomePage modalVisible={"register"} />}
+            />
+          </Route>
+          <Route
+            path="*"
+            element={<h1>Nie znaleźliśmy takiej strony</h1>}
+          ></Route>
+        </Routes>
+      </ModalContextProvider>
     </Router>
   );
 }

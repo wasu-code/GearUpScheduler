@@ -3,16 +3,26 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import Header from "@/components/Header";
 import ServiceList from "@/components/ServiceList";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Footer from "@/components/Footer";
 import { useSearchParams } from "react-router-dom";
 import { services } from "@/components/ServiceList";
 import { Calendar } from "@/components/ui/calendar";
+import { useModal } from "@/context/ModalContext";
 
-export function HomePage() {
+export function HomePage({ modalVisible }) {
   let [searchParams, setSearchParams] = useSearchParams();
+  const { setLoginVisible, setRegisterVisible } = useModal();
 
   const serviceId = searchParams.get("service_id");
+
+  useEffect(() => {
+    if (modalVisible === "login") {
+      setLoginVisible(true);
+    } else if (modalVisible === "register") {
+      setRegisterVisible(true);
+    }
+  }, [location, setLoginVisible]);
 
   return (
     <>

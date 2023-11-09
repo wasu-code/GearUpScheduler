@@ -6,49 +6,47 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-
-
 function AuthContextProvider({ children }) {
   const [isLoaded, setLoaded] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    /*setUser({
-      id: 1,
-      name: "Test",
-      role: "USER",
-    });*/
+    // setUser({
+    //   id: 1,
+    //   name: "Test",
+    //   role: "ADMIN",
+    // });
 
     setLoaded(true);
   }, []);
 
   async function login(email, password) {
     return new Promise((resolve, reject) => {
-      // Make API call for login 
-      fetch('api/login', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-              email: email,
-              password: password,
-          }),
+      // Make API call for login
+      fetch("api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
       })
-      .then(response => {
-          const contentType = response.headers.get('content-type');
+        .then((response) => {
+          const contentType = response.headers.get("content-type");
 
-          if (contentType && contentType.includes('application/json')) {
-              return response.json(); // Parse JSON response
+          if (contentType && contentType.includes("application/json")) {
+            return response.json(); // Parse JSON response
           } else {
-              return response.text(); // Get text response
+            return response.text(); // Get text response
           }
-      })
-      .then(data => {
+        })
+        .then((data) => {
           let messages = [];
 
           if (Array.isArray(data.errors)) {
-            const errorMessages = data.errors.map(error => error.msg);
+            const errorMessages = data.errors.map((error) => error.msg);
             messages = errorMessages;
           } else if (data.message || data.error) {
             const messageArray = [data.message, data.error].filter(Boolean);
@@ -57,54 +55,58 @@ function AuthContextProvider({ children }) {
 
           if (data.user) {
             const u = data.user;
-            setUser({ id: u._id, name: u.name + " " + u.surname, role: 'USER' });
-            
-            let closeLoginButton = document.querySelector('#closeLoginButton');
-            closeLoginButton.click(); 
+            setUser({
+              id: u._id,
+              name: u.name + " " + u.surname,
+              role: "USER",
+            });
+
+            let closeLoginButton = document.querySelector("#closeLoginButton");
+            closeLoginButton.click();
           }
 
           resolve(messages);
-      })
-      .catch(error => {
-          console.error('ERR:', error);
-          reject(['An error occurred.']); 
-      })
-  });
+        })
+        .catch((error) => {
+          console.error("ERR:", error);
+          reject(["An error occurred."]);
+        });
+    });
   }
 
   async function register(name, surname, password, email) {
     return new Promise((resolve, reject) => {
-      // Make API call for login 
-      fetch('api/register', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-              email: email,
-              password: password,
-              name: name,
-              surname: surname
-          }),
+      // Make API call for login
+      fetch("api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          name: name,
+          surname: surname,
+        }),
       })
-      .then(response => {
-          if (response.status==200) {
-            resolve(['Zarejestrowano. Teraz możesz się zalogować']);
+        .then((response) => {
+          if (response.status == 200) {
+            resolve(["Zarejestrowano. Teraz możesz się zalogować"]);
           }
 
-          const contentType = response.headers.get('content-type');
+          const contentType = response.headers.get("content-type");
 
-          if (contentType && contentType.includes('application/json')) {
-              return response.json(); // Parse JSON response
+          if (contentType && contentType.includes("application/json")) {
+            return response.json(); // Parse JSON response
           } else {
-              return response.text(); // Get text response
+            return response.text(); // Get text response
           }
-      })
-      .then(data => {
+        })
+        .then((data) => {
           let messages = [];
 
           if (Array.isArray(data.errors)) {
-            const errorMessages = data.errors.map(error => error.msg);
+            const errorMessages = data.errors.map((error) => error.msg);
             messages = errorMessages;
           } else if (data.message || data.error) {
             const messageArray = [data.message, data.error].filter(Boolean);
@@ -120,12 +122,12 @@ function AuthContextProvider({ children }) {
           }*/
 
           resolve(messages);
-      })
-      .catch(error => {
-          console.error('ERR:', error);
-          reject(['An error occurred.']); 
-      })
-  });
+        })
+        .catch((error) => {
+          console.error("ERR:", error);
+          reject(["An error occurred."]);
+        });
+    });
   }
 
   const value = {
