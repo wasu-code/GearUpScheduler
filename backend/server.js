@@ -17,6 +17,9 @@ const secret_key = process.env.SECRET_KEY;
 const logoutHandler = require("./controllers/logout");
 const loginHandler = require("./controllers/login");
 const registerHandler = require("./controllers/register");
+const saveVisit = require("./controllers/visitSave");
+const deleteVisit = require("./controllers/visitDelete");
+const { getUserVisits, getAllVisits } = require("./controllers/visitGet");
 
 //------------Middleware-----------------------
 app.use(bodyParser.json());
@@ -62,9 +65,13 @@ mongoose
 app.post("/login", loginHandler);
 app.post("/register", registerHandler);
 app.post("/logout", logoutHandler);
+app.post("/visitSave", saveVisit);
+app.post("/visitDelete", deleteVisit);
+app.post("/visitGet", getUserVisits);
+app.post("/visitGet", getAllVisits);
 app.get("/user", (req, res) => {
   res.send(req.user);
-});
+}); 
 
 app.listen(5000, () => {
   console.log(`Example app listening on port 5000`);
