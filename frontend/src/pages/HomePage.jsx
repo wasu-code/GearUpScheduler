@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import ServiceList from "@/components/ServiceList";
 import { Outlet, useLocation } from "react-router-dom";
@@ -9,6 +10,7 @@ import { useSearchParams } from "react-router-dom";
 import { services } from "@/components/ServiceList";
 import { Calendar } from "@/components/ui/calendar";
 import { useModal } from "@/context/ModalContext";
+import { UpdateIcon } from "@radix-ui/react-icons";
 
 export function HomePage({ modalVisible }) {
   let [searchParams, setSearchParams] = useSearchParams();
@@ -54,6 +56,8 @@ const ServiceForm = ({ serviceId }) => {
   const [date, setDate] = useState(
     new Date(searchParams.get("date") || new Date())
   );
+  const [time, setTime] = useState(searchParams.get("time") || "10:00");
+  const [isSaving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!serviceId || !date) return;
@@ -61,8 +65,9 @@ const ServiceForm = ({ serviceId }) => {
     setSearchParams({
       service_id: serviceId,
       date: date.toISOString().split("T")[0],
+      time,
     });
-  }, [date, serviceId]);
+  }, [date, serviceId, time]);
 
   const service = services.find((service) => service.id === serviceId);
   if (!service) {
@@ -73,16 +78,69 @@ const ServiceForm = ({ serviceId }) => {
     );
   }
 
+  function handleTimeChange(e) {
+    setTime(e.target.value);
+  }
+
+  async function handleClick() {
+    setSaving(true);
+
+    setTimeout(() => {
+      const timestamp = new Date(date);
+      timestamp.setHours(time.split(":")[0]);
+      timestamp.setMinutes(time.split(":")[1]);
+
+      setSaving(false);
+    }, 2000);
+  }
+
+  const isDisabled =
+    !date ||
+    date < new Date() ||
+    !time ||
+    time.split(":")[0] < 10 ||
+    time.split(":")[1] !== "00" ||
+    isSaving;
+
   return (
-    <div className="rounded-md border mt-4 py-4">
-      <h2 className="text-lg font-bold text-slate-900">Wybierz datę</h2>
-      <div className="flex justify-center">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={setDate}
-          className=""
-        />
+    <div className="grid grid-cols-2 rounded-md border mt-4 py-4">
+      <div>
+        <h2 className="text-lg font-bold text-slate-900">Wybierz datę</h2>
+        <div className="flex justify-center">
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={setDate}
+            className=""
+          />
+        </div>
+      </div>
+      <div>
+        <h2 className="text-lg font-bold text-slate-900">Wybierz godzinę</h2>
+        <div className="mt-2 pt-1">Dostępne godziny 10:00-18:00</div>
+        <div className="flex justify-center">
+          <input
+            type="time"
+            min="10:00"
+            max="18:00"
+            required
+            value={time}
+            onChange={handleTimeChange}
+            className="peer mt-2 cursor-pointer"
+            step="3600"
+          />
+          <span className="mt-2 peer-invalid:after:content-['x'] peer-invalid:after:text-red-700 peer-invalid:after:absolute peer-invalid:after:pl-1 peer-valid:after:content-['✓'] peer-valid:after:text-green-700 peer-valid:after:absolute peer-valid:after:pl-1"></span>
+        </div>
+      </div>
+      <div className="col-span-2 flex justify-center items-center">
+        <Button className="mt-8" onClick={handleClick} disabled={isDisabled}>
+          {isSaving && (
+            <div className="animate-spin mr-2">
+              <UpdateIcon />
+            </div>
+          )}
+          Zapisz wizytę
+        </Button>
       </div>
     </div>
   );
