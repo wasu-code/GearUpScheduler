@@ -6,7 +6,7 @@ const getUserVisits= async (req, res) => {
   try {
     const userId = req.params.user_id; 
 
-    const userVisits = await Visits.find({ user_id });
+    const userVisits = await Visit.find({ user_id });
 
     res.status(200).json(userVisits);
   } catch (error) {
@@ -18,7 +18,7 @@ const getUserVisits= async (req, res) => {
 const getAllVisits = async (req, res) => {
   try {
     
-    const allVisits = await Visits.find();
+    const allVisits = await Visit.find();
 
     res.status(200).json(allVisits);
   } catch (error) {
