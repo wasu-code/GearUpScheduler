@@ -35,7 +35,10 @@ function Header() {
         className="flex items-center justify-between p-6 lg:px-8"
         aria-label="Global"
       >
-        <span className="text-sm font-semibold leading-6 text-slate-100">
+        <span className="text-sm font-semibold leading-6 text-slate-100">  
+          <Link to={"/"} className="text-2xl font-bold mr-10">  
+            GearUpScheduler
+          </Link>
           {/* {user && `Zalogowany: ${user.name}`} */}
           {user && (
             <Link to={user.role === "ADMIN" ? "/mechanic" : "/profile"}>
