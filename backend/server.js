@@ -67,8 +67,8 @@ app.post("/register", registerHandler);
 app.post("/logout", logoutHandler);
 app.post("/visitSave", saveVisit);
 app.post("/visitDelete", deleteVisit);
-app.post("/visitGet", getUserVisits);
-app.post("/visitGet", getAllVisits);
+app.get("/visitGet", getUserVisits);    //do sprawdzenia
+app.get("/visitGet", getAllVisits);     //do sprawdzenia
 app.get("/user", (req, res) => {
   res.send(req.user);
 }); 
