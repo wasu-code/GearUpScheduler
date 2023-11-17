@@ -11,6 +11,7 @@ import { services } from "@/components/ServiceList";
 import { Calendar } from "@/components/ui/calendar";
 import { useModal } from "@/context/ModalContext";
 import { UpdateIcon } from "@radix-ui/react-icons";
+import { Toaster } from "@/components/ui/toaster"
 
 export function HomePage({ modalVisible }) {
   let [searchParams, setSearchParams] = useSearchParams();
@@ -153,6 +154,7 @@ export const HomeLayout = () => {
       <main>
         <Outlet />
       </main>
+      <Toaster/>
       <Footer />
     </>
   );

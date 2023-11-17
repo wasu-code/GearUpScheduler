@@ -60,6 +60,7 @@ function AuthContextProvider({ children }) {
               name: u.name + " " + u.surname,
               role: "USER",
             });
+            //console.log(u._id);
 
             let closeLoginButton = document.querySelector("#closeLoginButton");
             closeLoginButton.click();
@@ -130,11 +131,34 @@ function AuthContextProvider({ children }) {
     });
   }
 
+  async function logout() {
+    return new Promise((resolve, reject) => {
+      fetch("api/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          if (response.status == 200) {
+            setUser(null);
+            resolve(true);
+          } else {
+            reject(false);
+          }
+        })
+        .catch((error) => {
+          console.error("ERR:", error);
+        });
+    })
+  }
+
   const value = {
     isLoaded,
     user,
     login,
     register,
+    logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

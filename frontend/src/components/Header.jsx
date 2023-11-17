@@ -14,9 +14,11 @@ import { Button } from "@/components/ui/button";
 import Login from "@/components/Login";
 import { useModal } from "@/context/ModalContext";
 import { Link } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 function Header() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const { toast } = useToast()
   const { loginVisible, registerVisible, setLoginVisible, setRegisterVisible } =
     useModal();
 
@@ -28,6 +30,15 @@ function Header() {
       setLoginVisible(true);
     }
   };
+
+  const handleLogout = () => {
+    const success = logout();
+    if (success) {
+      toast({
+        title: "Wylogowano"
+      })
+    }
+  }
 
   return (
     <header className="absolute inset-x-0 top-0 z-50 bg-slate-900">
@@ -49,35 +60,45 @@ function Header() {
           )}
         </span>
         <span className="text-sm font-semibold leading-6 text-slate-100">
-          <Dialog
-            open={loginVisible || registerVisible}
-            onOpenChange={handleOpenChange}
-          >
-            <DialogTrigger asChild>
-              <Button type="button" variant="secondary">
-                Zaloguj się
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Witamy</DialogTitle>
-                <DialogDescription>Logowanie</DialogDescription>
-              </DialogHeader>
-              <Login />
-              <DialogFooter className="sm:justify-start">
-                <DialogClose asChild>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    id="closeLoginButton"
-                    className="hidden"
-                  >
-                    Zamknij
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          {user ? 
+            <Button 
+              type="button" 
+              variant="secondary"
+              onClick={handleLogout}
+              >
+              Wyloguj
+            </Button>
+          :
+            <Dialog
+              open={loginVisible || registerVisible}
+              onOpenChange={handleOpenChange}
+            >
+              <DialogTrigger asChild>
+                <Button type="button" variant="secondary">
+                  Zaloguj się
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Witamy</DialogTitle>
+                  <DialogDescription>Logowanie</DialogDescription>
+                </DialogHeader>
+                <Login />
+                <DialogFooter className="sm:justify-start">
+                  <DialogClose asChild>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      id="closeLoginButton"
+                      className="hidden"
+                    >
+                      Zamknij
+                    </Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          }
         </span>
       </nav>
     </header>
