@@ -8,6 +8,7 @@ import Header from "./components/Header";
 import { useAuth } from "./context/AuthContext";
 import ModalContextProvider from "./context/ModalContext";
 import { UserDashboard } from "./pages/UserDashboard";
+import { AdminDashboard } from "./pages/AdminDashboard";
 
 function App() {
   const { isLoaded, user } = useAuth();
@@ -36,7 +37,8 @@ function App() {
               path="/register"
               element={<HomePage modalVisible={"register"} />}
             />
-            <Route path="/profile" element={<UserDashboard/>} />
+            <Route path="/profile" element={<UserDashboard />} />
+            <Route path="/mechanic" element={<AdminDashboard />} />
           </Route>
           <Route
             path="*"

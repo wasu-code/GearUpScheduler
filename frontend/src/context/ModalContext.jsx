@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
 const ModalContext = createContext({});
 
@@ -11,6 +12,8 @@ function ModalContextProvider({ children }) {
   const [loginVisible, setLoginVisible] = useState(false);
   const [registerVisible, setRegisterVisible] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (loginVisible) {
@@ -18,7 +21,13 @@ function ModalContextProvider({ children }) {
     } else if (registerVisible) {
       navigate("/register");
     } else {
-      navigate("/");
+      let pathname = location.pathname;
+      let search = location.search;
+      navigate(
+        pathname === "/login" || pathname === "/register" || !user
+          ? "/"
+          : pathname + search
+      );
     }
   }, [loginVisible, registerVisible]);
 

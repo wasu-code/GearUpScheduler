@@ -150,7 +150,7 @@ function AuthContextProvider({ children }) {
         .catch((error) => {
           console.error("ERR:", error);
         });
-    })
+    });
   }
 
   const value = {

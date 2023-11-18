@@ -20,21 +20,25 @@ export const services = [
   {
     id: "service1",
     name: "Test 1",
+    duration: 1,
     price: 1.99,
   },
   {
     id: "service2",
     name: "Service2",
+    duration: 2,
     price: 1.99,
   },
   {
     id: "service3",
     name: "Lorem 3",
+    duration: 1,
     price: 1.99,
   },
   {
     id: "service4",
     name: "Mechanik 4",
+    duration: 3,
     price: 1.99,
   },
 ];
