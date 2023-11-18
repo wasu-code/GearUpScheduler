@@ -100,7 +100,7 @@ cd backend
 2. Uruchom serwer:
 
 ```
-npm start
+npm run dev
 ```
 
 ### Frontend
