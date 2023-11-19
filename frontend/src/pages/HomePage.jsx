@@ -165,6 +165,33 @@ const ServiceForm = ({ serviceId }) => {
     }, 2000);
   }
 
+  async function saveVisit(event) {
+    event.preventDefault();
+
+    setSaving(true);
+
+    let res = await fetch(`/api/visitSave`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: user.id,
+        day: date,
+        duration: service.duration,
+        startTime: time,
+        type: service.id,
+        description: service.name,
+      }),
+    });
+
+    if (res.ok) {
+      setSuccess(true);
+    }
+
+    setSaving(false);
+  }
+
   const isDisabled =
     !date ||
     date.getDate() < new Date().getDate() ||
@@ -182,15 +209,8 @@ const ServiceForm = ({ serviceId }) => {
     return <ServiceSuccess service={service} date={date} time={time} />;
   }
 
-  function saveVisit(event) {
-    event.preventDefault();
-  }
-
   return (
-    <form
-      className="grid grid-cols-2 rounded-md border bg-white mt-4 p-4"
-      onSubmit={saveVisit}
-    >
+    <div className="grid grid-cols-2 rounded-md border bg-white mt-4 p-4">
       <div>
         <h2 className="text-lg font-bold text-slate-900">Wybierz datę</h2>
         <div className="flex justify-center">
@@ -244,9 +264,9 @@ const ServiceForm = ({ serviceId }) => {
           </h2>
           <Button
             className="mt-4"
-            onClick={handleClick}
             disabled={isDisabled}
             type="submit"
+            onClick={saveVisit}
           >
             {isSaving && (
               <div className="animate-spin mr-2">
@@ -257,7 +277,7 @@ const ServiceForm = ({ serviceId }) => {
           </Button>
         </div>
       </div>
-    </form>
+    </div>
   );
 };
 
