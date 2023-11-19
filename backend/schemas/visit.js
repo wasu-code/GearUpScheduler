@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 
 const visitSchema = new mongoose.Schema({
-  date: Date,
-  user_id: String,
-  type: String,
-  description: String
+  day: { type: Date, required: true },
+  startTime: { type: Number, required: true },
+  duration: { type: Number, required: true },
+  user_id: { type: String, required: true },
+  type: { type: String, required: true },
+  description: { type: String, required: true },
 });
 
 module.exports = mongoose.model("Visit", visitSchema);

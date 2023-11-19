@@ -18,8 +18,12 @@ const logoutHandler = require("./controllers/logout");
 const loginHandler = require("./controllers/login");
 const registerHandler = require("./controllers/register");
 const saveVisit = require("./controllers/visitSave");
-const deleteVisit = require("./controllers/visitDelete");
-const { getUserVisits, getAllVisits } = require("./controllers/visitGet");
+const deleteVisitHandler = require("./controllers/visitDelete");
+const {
+  getUserVisits,
+  getAllVisits,
+  getAvailableHours,
+} = require("./controllers/visitGet");
 
 //------------Middleware-----------------------
 app.use(bodyParser.json());
@@ -66,12 +70,13 @@ app.post("/login", loginHandler);
 app.post("/register", registerHandler);
 app.post("/logout", logoutHandler);
 app.post("/visitSave", saveVisit);
-app.post("/visitDelete", deleteVisit);
-app.get("/visitGet", getUserVisits);    //do sprawdzenia
-app.get("/visitGet", getAllVisits);     //do sprawdzenia
+app.delete("/visitDelete:visit_id", deleteVisitHandler);
+app.get("/getUserVisit", getUserVisits);
+app.get("/getAllVisit", getAllVisits);
 app.get("/user", (req, res) => {
   res.send(req.user);
-}); 
+});
+app.get("/availableHours", getAvailableHours);
 
 app.listen(5000, () => {
   console.log(`Example app listening on port 5000`);
