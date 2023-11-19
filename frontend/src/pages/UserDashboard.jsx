@@ -19,25 +19,28 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/components/ui/use-toast";
 
 
 export function UserDashboard() {
   const { user } = useAuth();
-  const [visits, setVisits] = useState([]);
+  const [visits, setVisits] = useState(null);
+  const { toast } = useToast();
+  let [edited, setEdited] = useState(0);
 
   useEffect(() => {
     getUserVisits(user.id).then( (data) => {
       setVisits(data)
     });
       
-  }, [user]);
+  }, [user, edited]);
 
   async function getUserVisits(id) {
     return new Promise((resolve, reject) => {
       // Make API call for login
-      fetch("api/getUserVisit?user_id="+id, {
+      fetch(`api/getUserVisit?user_id=${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -51,31 +54,6 @@ export function UserDashboard() {
           }
         })
         .then((data) => {
-          /*data = [{
-            "day": new Date("2023-12-10"),
-            "startTime": 10,
-            "duration": 60,
-            "user_id": "user123",
-            "type": "example",
-            "description": "Example visit"
-          },
-          {
-            "day": new Date("2023-12-10"),
-            "startTime": 10,
-            "duration": 60,
-            "user_id": "user123",
-            "type": "example",
-            "description": "Example visit"
-          },
-          {
-            "day": new Date("2023-12-10"),
-            "startTime": 10,
-            "duration": 60,
-            "user_id": "user123",
-            "type": "example",
-            "description": "Example visit"
-          }]*/
-          console.log(data);
           resolve(data);
         })
         .catch((error) => {
@@ -83,6 +61,29 @@ export function UserDashboard() {
           reject(["An error occurred."]);
         });
     });
+  }
+
+  async function deleteVisit(id) {
+    fetch(`api/visitDelete/${id}`, {
+      method: 'DELETE'
+    }).then((response) => {
+      if (response.status == 200) {
+        return true
+      } else {
+        return false
+      }
+    }).then((success)=>{
+      if (success) {
+        toast({
+          title: "Odwołano wizytę"
+        })
+        setEdited(edited+1);
+      } else {
+        toast({
+          title: "Nie udało się odwołać wizyty"
+        })
+      }
+    })
   }
 
   function daysLeft(date) {
@@ -138,15 +139,15 @@ export function UserDashboard() {
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Jesteś pewien, że chcesz odwołać wizytę?</AlertDialogTitle>
+                        <AlertDialogTitle>Tej akcji nie można cofnąć.</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Tej akcji nie można cofnąć. <br/> 
-                          Możesz umówić nowy termin wizyty na ekranie głównym.
+                        Jesteś pewien, że chcesz odwołać wizytę?<br/> 
+                        Możesz umówić nowy termin wizyty na ekranie głównym.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Anuluj</AlertDialogCancel>
-                        <AlertDialogAction>Odwołaj</AlertDialogAction>
+                        <AlertDialogAction onClick={() => deleteVisit(v._id)}>Odwołaj</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
