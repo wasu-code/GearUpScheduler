@@ -127,9 +127,15 @@ export function UserDashboard() {
             let daysLeft2 = daysLeft(v.day);
           
             return (
-              <Alert key={index} className="relative w-1/2 mx-4 my-2 shadow-md">
+              <Alert key={index} className="relative w-full lg:w-[70%] xl:w-[60%] mx-4 my-2 shadow-md">
                 <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Zbliżająca się wizyta</AlertTitle>
+                <AlertTitle>
+                  {daysLeft2>=0 ? 
+                    "Zbliżająca się wizyta"
+                  :
+                    "Zakończona wizyta"
+                  }
+                </AlertTitle>
                 <AlertDescription>
                   Twoja wizyta  
                   <Badge variant="outline" className="mx-2 bg-slate-300">
