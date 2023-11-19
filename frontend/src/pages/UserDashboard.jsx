@@ -59,7 +59,19 @@ export function UserDashboard() {
             const dateB = new Date(b.day);
             return dateA - dateB;
           });
-          resolve(sortedData);
+          const upcomingFirst = sortedData.sort((a, b) => {
+            const daysLeftA = daysLeft(a.day);
+            const daysLeftB = daysLeft(b.day);
+          
+            if (daysLeftA >= 0 && daysLeftB < 0) {
+              return -1; // `a` should come before `b`
+            } else if (daysLeftA < 0 && daysLeftB >= 0) {
+              return 1; // `b` should come before `a`
+            } else {
+              return 0; // Maintain current order or sort by other criteria
+            }
+          });
+          resolve(upcomingFirst);
         })
         .catch((error) => {
           console.error("ERR:", error);
