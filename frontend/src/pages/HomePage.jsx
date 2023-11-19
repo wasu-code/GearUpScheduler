@@ -74,7 +74,7 @@ const ServiceForm = ({ serviceId }) => {
   const [date, setDate] = useState(
     new Date(searchParams.get("date") || new Date())
   );
-  const [time, setTime] = useState(searchParams.get("time") || "10");
+  const [time, setTime] = useState(searchParams.get("time") || 10);
   const [isSaving, setSaving] = useState(false);
   const [isSuccess, setSuccess] = useState(
     searchParams.get("isSuccess") || false
@@ -83,9 +83,12 @@ const ServiceForm = ({ serviceId }) => {
   const [services, setServices] = useState();
 
   useEffect(() => {
+    if (!date) return;
+
     async function getHours() {
-      // await fetch
-      const res = await fetch(`api/availableHours?day=${date.getDay()}`);
+      let d = date.toISOString().split("T")[0];
+
+      const res = await fetch(`api/availableHours?day=${d}`);
       const _hours = await res.json();
 
       setHours(_hours);
@@ -148,23 +151,6 @@ const ServiceForm = ({ serviceId }) => {
     return "";
   }
 
-  function handleTimeChange(e) {
-    setTime(e.target.value);
-  }
-
-  async function handleClick() {
-    setSaving(true);
-
-    setTimeout(() => {
-      const timestamp = new Date(date);
-      timestamp.setHours(time.split(":")[0]);
-      timestamp.setMinutes(time.split(":")[1]);
-
-      setSuccess(true);
-      setSaving(false);
-    }, 2000);
-  }
-
   async function saveVisit(event) {
     event.preventDefault();
 
@@ -177,7 +163,7 @@ const ServiceForm = ({ serviceId }) => {
       },
       body: JSON.stringify({
         user_id: user.id,
-        day: date,
+        day: date.toISOString().split("T")[0],
         duration: service.duration,
         startTime: time,
         type: service.id,
@@ -217,7 +203,9 @@ const ServiceForm = ({ serviceId }) => {
           <Calendar
             mode="single"
             selected={date}
-            onSelect={setDate}
+            onSelect={(d) => {
+              setDate(new Date(d.getTime() + 3600000));
+            }}
             className=""
           />
         </div>
