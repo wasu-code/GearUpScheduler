@@ -1,0 +1,26 @@
+[
+  {
+    "id": "wymiana_oleju_i_filtrow",
+    "name": "Wymiana oleju i filtrów",
+    "duration": 1,
+    "price": 150
+  },
+  {
+    "id": "wymiana_klockow_hamulcowych",
+    "name": "Wymiana klocków hamulcowych",
+    "duration": 2,
+    "price": 300
+  },
+  {
+    "id": "naprawa_silnika",
+    "name": "Naprawa silnika",
+    "duration": 5,
+    "price": 2000
+  },
+  {
+    "id": "wymiana_opon",
+    "name": "Wymiana opon",
+    "duration": 1,
+    "price": 200
+  }
+]

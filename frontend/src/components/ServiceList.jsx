@@ -16,38 +16,12 @@ import { useNavigate } from "react-router-dom";
 
 import { useSearchParams } from "react-router-dom";
 
-export const services = [
-  {
-    id: "service1",
-    name: "Test 1",
-    duration: 1,
-    price: 1.99,
-  },
-  {
-    id: "service2",
-    name: "Service2",
-    duration: 2,
-    price: 1.99,
-  },
-  {
-    id: "service3",
-    name: "Lorem 3",
-    duration: 1,
-    price: 1.99,
-  },
-  {
-    id: "service4",
-    name: "Mechanik 4",
-    duration: 3,
-    price: 1.99,
-  },
-];
-
 const ServiceList = () => {
   const [open, setOpen] = useState(false);
   let [searchParams, setSearchParams] = useSearchParams();
 
   const [value, setValue] = useState(searchParams.get("service_id"));
+  const [services, setServices] = useState([]);
 
   const service = services.find((service) => service.id === value);
 
@@ -60,6 +34,17 @@ const ServiceList = () => {
       setSearchParams();
     }
   }, [value]);
+
+  useEffect(() => {
+    async function loadServices() {
+      const res = await fetch("/data/services.json");
+      const _services = await res.json();
+
+      setServices(_services);
+    }
+
+    loadServices();
+  }, []);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

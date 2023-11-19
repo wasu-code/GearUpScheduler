@@ -14,7 +14,6 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import Footer from "@/components/Footer";
-import { services } from "@/components/ServiceList";
 import { Calendar } from "@/components/ui/calendar";
 import { useModal } from "@/context/ModalContext";
 import { UpdateIcon } from "@radix-ui/react-icons";
@@ -28,45 +27,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-let api_hours = [
-  {
-    value: "10",
-    available: true,
-  },
-  {
-    value: "11",
-    available: true,
-  },
-  {
-    value: "12",
-    available: true,
-  },
-  {
-    value: "13",
-    available: false,
-  },
-  {
-    value: "14",
-    available: true,
-  },
-  {
-    value: "15",
-    available: true,
-  },
-  {
-    value: "16",
-    available: false,
-  },
-  {
-    value: "17",
-    available: true,
-  },
-  {
-    value: "18",
-    available: false,
-  },
-];
 
 export function HomePage({ modalVisible }) {
   let [searchParams, setSearchParams] = useSearchParams();
@@ -120,15 +80,19 @@ const ServiceForm = ({ serviceId }) => {
     searchParams.get("isSuccess") || false
   );
   const [hours, setHours] = useState([]);
+  const [services, setServices] = useState();
 
   useEffect(() => {
     async function getHours() {
       // await fetch
-      setHours(api_hours);
+      const res = await fetch(`api/availableHours?day=${date.getDay()}`);
+      const _hours = await res.json();
+
+      setHours(_hours);
     }
 
     getHours();
-  }, []);
+  }, [date]);
 
   useEffect(() => {
     if (!user) return;
@@ -141,6 +105,25 @@ const ServiceForm = ({ serviceId }) => {
       isSuccess,
     });
   }, [date, serviceId, time, isSuccess]);
+
+  useEffect(() => {
+    async function loadServices() {
+      const res = await fetch("/data/services.json");
+      const _services = await res.json();
+      setServices(_services);
+    }
+    loadServices();
+  }, []);
+
+  if (!services) {
+    return (
+      <div className="w-full flex items-center justify-center my-32">
+        <div className="animate-spin mr-2 w-min">
+          <UpdateIcon />
+        </div>
+      </div>
+    );
+  }
 
   const service = services.find((service) => service.id === serviceId);
   if (!service) {
@@ -199,8 +182,15 @@ const ServiceForm = ({ serviceId }) => {
     return <ServiceSuccess service={service} date={date} time={time} />;
   }
 
+  function saveVisit(event) {
+    event.preventDefault();
+  }
+
   return (
-    <div className="grid grid-cols-2 rounded-md border bg-white mt-4 p-4">
+    <form
+      className="grid grid-cols-2 rounded-md border bg-white mt-4 p-4"
+      onSubmit={saveVisit}
+    >
       <div>
         <h2 className="text-lg font-bold text-slate-900">Wybierz datę</h2>
         <div className="flex justify-center">
@@ -252,7 +242,12 @@ const ServiceForm = ({ serviceId }) => {
           <h2 className="text-lg font-bold text-slate-900">
             Szacunkowy czas trwania: {service.duration}h
           </h2>
-          <Button className="mt-4" onClick={handleClick} disabled={isDisabled}>
+          <Button
+            className="mt-4"
+            onClick={handleClick}
+            disabled={isDisabled}
+            type="submit"
+          >
             {isSaving && (
               <div className="animate-spin mr-2">
                 <UpdateIcon />
@@ -262,7 +257,7 @@ const ServiceForm = ({ serviceId }) => {
           </Button>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 
