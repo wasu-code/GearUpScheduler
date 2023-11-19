@@ -54,7 +54,12 @@ export function UserDashboard() {
           }
         })
         .then((data) => {
-          resolve(data);
+          const sortedData = data.sort((a, b) => {
+            const dateA = new Date(a.day);
+            const dateB = new Date(b.day);
+            return dateA - dateB;
+          });
+          resolve(sortedData);
         })
         .catch((error) => {
           console.error("ERR:", error);
@@ -96,9 +101,6 @@ export function UserDashboard() {
   
     // Convert milliseconds to days
     let daysDifference = Math.floor(difference / (1000 * 60 * 60 * 24));
-
-    //return max of 100 days (max value on progress bar)
-    if (daysDifference > 100) {daysDifference = 100}
   
     return daysDifference;
   }
@@ -113,29 +115,35 @@ export function UserDashboard() {
             let daysLeft2 = daysLeft(v.day);
           
             return (
-              <Alert key={index} className="relative w-1/2 mx-4 my-1">
+              <Alert key={index} className="relative w-1/2 mx-4 my-2 shadow-md">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Zbliżająca się wizyta</AlertTitle>
                 <AlertDescription>
                   Twoja wizyta  
-                  <Badge variant="outline" className="mx-2">
-                    {v.type}
+                  <Badge variant="outline" className="mx-2 bg-slate-300">
+                    {v.description}
                   </Badge> 
 
                   {daysLeft2 > 0 ? 
-                    "zbliża się. Pozostałao "+ daysLeft2 + " dni"
+                    <span>zbliża się. Pozostało <b>{daysLeft2}</b> dni</span>
                   :
                     "zakończyła się " + daysLeft2 + " dni temu"
                   } 
                   
+                  <Progress value={daysLeft2 > 100 ? daysLeft2 = 100 : daysLeft2 } className="my-1 mb-2"/>
 
-                  <Progress value={daysLeft2} className="my-1"/>
-
-                  {v.description} <br/> 
+                  <Badge variant="outline" className="bg-slate-300 mr-2">
+                    Data wizyty: {new Date(v.day).toLocaleDateString('pl-PL')} godzina {v.startTime}:00
+                  </Badge> 
+                  <Badge variant="outline" className="bg-slate-300">
+                    Przewidywany czas trwania naprawy: {v.duration} godzina/y
+                  </Badge>
+                  
+                  <br/> 
                   
                   <AlertDialog>
                     <AlertDialogTrigger>
-                      <Button variant="outline" className="mt-2">Odwołaj wizytę</Button>
+                      <Button className="mt-4 shadow-md">Odwołaj wizytę</Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
