@@ -11,7 +11,6 @@ const saveVisit = [
         duration,
         startTime,
         user_id,
-        date,
         type,
         description,
       });
