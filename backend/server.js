@@ -70,7 +70,7 @@ app.post("/login", loginHandler);
 app.post("/register", registerHandler);
 app.post("/logout", logoutHandler);
 app.post("/visitSave", saveVisit);
-app.delete("/visitDelete:visit_id", deleteVisitHandler);
+app.delete("/visitDelete/:visit_id", deleteVisitHandler);
 app.get("/getUserVisit", getUserVisits);
 app.get("/getAllVisit", getAllVisits);
 app.get("/user", (req, res) => {

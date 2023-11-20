@@ -22,19 +22,23 @@ import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
-
+import { useNavigate } from "react-router-dom";
 
 export function UserDashboard() {
   const { user } = useAuth();
   const [visits, setVisits] = useState(null);
   const { toast } = useToast();
   let [edited, setEdited] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getUserVisits(user.id).then( (data) => {
-      setVisits(data)
-    });
-      
+    if (user) {
+      getUserVisits(user.id).then( (data) => {
+        setVisits(data)
+      });
+    } else {
+      navigate("/");
+    }
   }, [user, edited]);
 
   async function getUserVisits(id) {
@@ -119,7 +123,7 @@ export function UserDashboard() {
 
   return (
     <div className="min-h-[80vh]"><br/> <br/> <br/> <br/> 
-      <h1 className="m-5 text-lg font-bold">Witaj {user.name}. Twoje wizyty:</h1>
+      <h1 className="m-5 text-lg font-bold">Witaj {user?.name}. Twoje wizyty:</h1>
       <div className="flex flex-wrap items-start  m-4">
 
         { visits && visits.length > 0 ? 

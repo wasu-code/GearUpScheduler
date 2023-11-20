@@ -11,11 +11,32 @@ function AuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // setUser({
-    //   id: 1,
-    //   name: "Test",
-    //   role: "ADMIN",
-    // });
+
+    fetch("api/user", {
+      method: "GET"
+    }).then((response) => {
+      if (response.status == 200) {
+        try {
+          return response.json();
+        } catch (error) {
+          return null;
+        }
+      } else {
+        return null
+      }
+    }).then ((u) => {
+      if (u) {
+        setUser({
+          id: u._id,
+          name: u.name + " " + u.surname,
+          role: u.role,
+        });
+      } else {
+        setUser(null);
+      }
+    }).catch((error) => {
+      console.log(error);
+    })
 
     setLoaded(true);
   }, []);
@@ -58,7 +79,7 @@ function AuthContextProvider({ children }) {
             setUser({
               id: u._id,
               name: u.name + " " + u.surname,
-              role: "USER",
+              role: u.role,
             });
             //console.log(u._id);
 
