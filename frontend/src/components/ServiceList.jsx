@@ -36,10 +36,6 @@ const ServiceList = () => {
   }, [value]);
 
   useEffect(() => {
-    setValue(searchParams.get("service_id"));
-  }, [searchParams]);
-
-  useEffect(() => {
     async function loadServices() {
       const res = await fetch("/data/services.json");
       const _services = await res.json();
@@ -72,6 +68,7 @@ const ServiceList = () => {
                 key={service.id}
                 value={service.id}
                 onSelect={(currentValue) => {
+                  setSearchParams({});
                   setValue(currentValue === value ? "" : service.id);
                   setOpen(false);
                 }}
