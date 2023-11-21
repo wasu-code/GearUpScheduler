@@ -11,45 +11,86 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const api_visits = [
-  {
-    name: "Jan",
-    surname: "Nowak",
-    service: "Service 1",
-    date: new Date(),
-    time: "12:00",
-    cost: 100,
-  },
-];
-
-{
-  /* <TableCell>{visit.name}</TableCell>
-<TableCell>{visit.surname}</TableCell>
-<TableCell>{visit.service}</TableCell>
-<TableCell>{visit.date}</TableCell>
-<TableCell>{visit.time}</TableCell>
-<TableCell>{visit.cost}</TableCell> */
-}
+import { TrashIcon, UpdateIcon } from "@radix-ui/react-icons";
+import { toast } from "@/components/ui/use-toast";
 
 export function AdminDashboard() {
   const { user } = useAuth();
   const [visits, setVisits] = useState([]);
+  const [isLoaded, setLoaded] = useState(false);
+  const [reload, setReload] = useState(true);
 
   useEffect(() => {
     async function loadVisits() {
-      setVisits(api_visits);
+      let _visits = await (await fetch("/api/getAllVisit")).json();
+
+      const users = [];
+      for (let i = 0; i < _visits.length; i++) {
+        let visit = _visits[i];
+        if (!users.find((user) => user._id === visit.user_id)) {
+          const _user = await (
+            await fetch(`/api/getUserByUserId?user_id=${visit.user_id}`)
+          ).json();
+
+          users.push(_user);
+        }
+      }
+
+      const services = await (await fetch("/data/services.json")).json();
+
+      _visits = _visits.map((visit) => {
+        let user = users.find((user) => user._id === visit.user_id);
+        let price = services.find((service) => service.id === visit.type).price;
+
+        return {
+          user: user,
+          price: price,
+          ...visit,
+        };
+      });
+
+      setVisits(_visits);
+
+      setLoaded(true);
     }
 
-    loadVisits();
-  }, []);
+    if (reload) {
+      setReload(false);
+      loadVisits();
+    }
+  }, [reload]);
+
+  async function deleteVisit(id) {
+    fetch(`api/visitDelete/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.status == 200) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+      .then((success) => {
+        if (success) {
+          toast({
+            title: "Usunięto wizytę",
+          });
+          setReload(true);
+        } else {
+          toast({
+            title: "Nie udało się usunąć wizyty",
+          });
+        }
+      });
+  }
 
   if (!user || user.role !== "ADMIN") {
     return <Navigate to="/" />;
   }
 
   return (
-    <section className="mx-auto max-w-2xl py-48 sm:py-32 lg:py-48">
+    <section className="mx-auto max-w-4xl py-48 sm:py-32 lg:py-48">
       <div>
         <h1 className="text-4xl font-bold tracking-tight text-center text-slate-900 sm:text-6xl">
           Sprawdź wizyty
@@ -64,24 +105,40 @@ export function AdminDashboard() {
                 <TableHead>Usługa</TableHead>
                 <TableHead>Data wizyty</TableHead>
                 <TableHead>Godzina wizyty</TableHead>
-                <TableHead>Koszt</TableHead>
+                <TableHead className="text-right">Koszt</TableHead>
+                <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {visits.map((visit) => (
-                <TableRow key={visit.id}>
-                  <TableCell>{visit.name}</TableCell>
-                  <TableCell>{visit.surname}</TableCell>
-                  <TableCell>{visit.service}</TableCell>
-                  <TableCell>
-                    {new Intl.DateTimeFormat("pl-PL").format(
-                      new Date(visit.date.toDateString())
-                    )}
-                  </TableCell>
-                  <TableCell>{visit.time}</TableCell>
-                  <TableCell>{visit.cost}zł</TableCell>
-                </TableRow>
-              ))}
+              {!isLoaded ? (
+                <div className="w-full flex items-center justify-center py-16">
+                  <div className="animate-spin mr-2">
+                    <UpdateIcon />
+                  </div>
+                </div>
+              ) : (
+                visits.map((visit) => (
+                  <TableRow key={visit.day + visit.startTime}>
+                    <TableCell>{visit.user?.name}</TableCell>
+                    <TableCell>{visit.user?.surname}</TableCell>
+                    <TableCell>{visit.description}</TableCell>
+                    <TableCell>{visit.day}</TableCell>
+                    <TableCell>
+                      {visit.startTime}:00 - {visit.startTime + visit.duration}
+                      :00
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {visit.price}zł
+                    </TableCell>
+                    <TableCell
+                      className="text-red cursor-pointer"
+                      onClick={() => deleteVisit(visit._id)}
+                    >
+                      <TrashIcon color="red" />
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
             <TableFooter>
               <TableRow>
