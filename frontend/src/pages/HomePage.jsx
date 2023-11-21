@@ -180,8 +180,14 @@ const ServiceForm = ({ serviceId }) => {
 
   const isDisabled =
     !date ||
-    date.getDate() < new Date().getDate() ||
-    (date.getDate() == new Date().getDate() && time < new Date().getHours()) ||
+    (date.getDate() < new Date().getDate() &&
+      date.getMonth() == new Date().getMonth()) ||
+    (date.getMonth() == new Date().getMonth() &&
+      date.getDate() == new Date().getDate() &&
+      time < new Date().getHours()) ||
+    (date.getMonth() < new Date().getMonth() &&
+      date.getFullYear() == new Date().getFullYear()) ||
+    date.getFullYear() < new Date().getFullYear() ||
     !time ||
     time < 10 ||
     time > 18 ||
