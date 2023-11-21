@@ -116,7 +116,7 @@ export function UserDashboard() {
     const difference = givenDate.getTime() - today.getTime() ;
   
     // Convert milliseconds to days
-    let daysDifference = Math.floor(difference / (1000 * 60 * 60 * 24));
+    let daysDifference = Math.ceil(difference / (1000 * 60 * 60 * 24));
   
     return daysDifference;
   }
