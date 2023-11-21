@@ -16,18 +16,12 @@ function ModalContextProvider({ children }) {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (loginVisible) {
+    if ((loginVisible || registerVisible) && user) {
+      navigate("/");
+    } else if (loginVisible) {
       navigate("/login");
     } else if (registerVisible) {
       navigate("/register");
-    } else {
-      let pathname = location.pathname;
-      let search = location.search;
-      navigate(
-        pathname === "/login" || pathname === "/register" || !user
-          ? "/"
-          : pathname + search
-      );
     }
   }, [loginVisible, registerVisible]);
 

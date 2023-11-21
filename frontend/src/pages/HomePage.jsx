@@ -78,7 +78,7 @@ const ServiceForm = ({ serviceId }) => {
   const [time, setTime] = useState(searchParams.get("time"));
   const [isSaving, setSaving] = useState(false);
   const [isSuccess, setSuccess] = useState(
-    searchParams.get("isSuccess") || false
+    searchParams.get("isSuccess") === "true" || false
   );
   const [services, setServices] = useState();
 
