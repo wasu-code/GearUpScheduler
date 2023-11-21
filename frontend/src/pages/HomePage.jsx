@@ -201,6 +201,8 @@ const ServiceForm = ({ serviceId }) => {
     return <ServiceSuccess service={service} date={date} time={time} />;
   }
 
+  console.log(hours)
+
   return (
     <div className="grid grid-cols-2 rounded-md border bg-white mt-4 p-4">
       <div>
@@ -317,9 +319,8 @@ function ServiceSuccess({ service, date, time }) {
               <p className="text-lg font-bold text-slate-900 mt-4">
                 Wizyta w godzinach:
               </p>
-              <span>{` ${time}:00 - ${
-                Number(time) + service.duration
-              }:00`}</span>
+              <span>{` ${time}:00 - ${Number(time) + service.duration
+                }:00`}</span>
             </div>
           </div>
 

@@ -35,7 +35,7 @@ const getAllVisits = [
 const getAvailableHours = [
   async (req, res) => {
     try {
-      const requestedDay = new Date(req.query.day);
+      const requestedDay = req.query.day;
 
       const visitsOnDay = await Visit.find({ day: requestedDay });
 
@@ -48,9 +48,10 @@ const getAvailableHours = [
       }));
 
       visitsOnDay.forEach((visit) => {
-        const endHour = visit.startHour + visit.duration;
+        const endHour = visit.startTime + visit.duration;
+        console.log(endHour);
 
-        for (let hour = visit.startHour; hour < endHour; hour++) {
+        for (let hour = visit.startTime; hour < endHour; hour++) {
           const index = workingHours.indexOf(hour);
           if (index !== -1) {
             availableHours[index].available = false;
