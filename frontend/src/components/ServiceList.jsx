@@ -31,9 +31,13 @@ const ServiceList = () => {
         service_id: value,
       });
     } else {
-      setSearchParams();
+      setSearchParams({});
     }
   }, [value]);
+
+  useEffect(() => {
+    setValue(searchParams.get("service_id"));
+  }, [searchParams]);
 
   useEffect(() => {
     async function loadServices() {
@@ -65,8 +69,8 @@ const ServiceList = () => {
           <CommandGroup>
             {services.map((service) => (
               <CommandItem
-                key={service.name}
-                value={service.name}
+                key={service.id}
+                value={service.id}
                 onSelect={(currentValue) => {
                   setValue(currentValue === value ? "" : service.id);
                   setOpen(false);

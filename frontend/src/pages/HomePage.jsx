@@ -201,8 +201,6 @@ const ServiceForm = ({ serviceId }) => {
     return <ServiceSuccess service={service} date={date} time={time} />;
   }
 
-  console.log(hours);
-
   return (
     <div className="grid grid-cols-2 rounded-md border bg-white mt-4 p-4">
       <div>
