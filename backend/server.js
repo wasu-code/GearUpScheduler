@@ -16,6 +16,7 @@ const secret_key = process.env.SECRET_KEY;
 //------------Controllers Imports-----------------------
 const logoutHandler = require("./controllers/logout");
 const loginHandler = require("./controllers/login");
+const getUserByUserIdHandler = require("./controllers/getUserByUserId");
 const registerHandler = require("./controllers/register");
 const saveVisit = require("./controllers/visitSave");
 const deleteVisitHandler = require("./controllers/visitDelete");
@@ -73,6 +74,7 @@ app.post("/visitSave", saveVisit);
 app.delete("/visitDelete/:visit_id", deleteVisitHandler);
 app.get("/getUserVisit", getUserVisits);
 app.get("/getAllVisit", getAllVisits);
+app.get("/getUserByUserId", getUserByUserIdHandler);
 app.get("/user", (req, res) => {
   res.send(req.user);
 });

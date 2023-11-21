@@ -38,7 +38,7 @@ const registerHandler = [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, surname, password, email, role, email_offert } = req.body;
+    const { name, surname, password, email, role } = req.body;
 
     // Haszowanie hasła
     bcrypt.hash(password, 10, (err, hashedPassword) => {
