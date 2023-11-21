@@ -149,7 +149,7 @@ export function UserDashboard() {
                   {daysLeft2 > 0 ? 
                     <span>zbliża się. Pozostało <b>{daysLeft2}</b> dni</span>
                   :
-                    "zakończyła się " + daysLeft2 + " dni temu"
+                    "zakończyła się " + Math.abs(daysLeft2) + " dni temu"
                   } 
                   
                   <Progress value={daysLeft2 > 100 ? daysLeft2 = 100 : daysLeft2 } className="my-1 mb-2"/>
@@ -157,12 +157,14 @@ export function UserDashboard() {
                   <Badge variant="outline" className="bg-slate-300 mr-2">
                     Data wizyty: {new Date(v.day).toLocaleDateString('pl-PL')} godzina {v.startTime}:00
                   </Badge> 
+                  {daysLeft2 > 0 ?
                   <Badge variant="outline" className="bg-slate-300">
                     Przewidywany czas trwania naprawy: {v.duration} godzina/y
                   </Badge>
+                  : ''}
                   
                   <br/> 
-                  
+                  {daysLeft2 > 0 ?
                   <AlertDialog>
                     <AlertDialogTrigger>
                       <Button className="mt-4 shadow-md">Odwołaj wizytę</Button>
@@ -181,6 +183,7 @@ export function UserDashboard() {
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
+                  : ''}
                 </AlertDescription>
               </Alert>
             )
