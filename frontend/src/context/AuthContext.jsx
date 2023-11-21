@@ -11,34 +11,37 @@ function AuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-
     fetch("api/user", {
-      method: "GET"
-    }).then((response) => {
-      if (response.status == 200) {
-        try {
-          return response.json();
-        } catch (error) {
+      method: "GET",
+    })
+      .then((response) => {
+        if (response.status == 200) {
+          try {
+            return response.json();
+          } catch (error) {
+            return null;
+          }
+        } else {
           return null;
         }
-      } else {
-        return null
-      }
-    }).then ((u) => {
-      if (u) {
-        setUser({
-          id: u._id,
-          name: u.name + " " + u.surname,
-          role: u.role,
-        });
-      } else {
-        setUser(null);
-      }
-    }).catch((error) => {
-      console.log(error);
-    })
-
-    setLoaded(true);
+      })
+      .then((u) => {
+        if (u) {
+          setUser({
+            id: u._id,
+            name: u.name + " " + u.surname,
+            role: u.role,
+          });
+        } else {
+          setUser(null);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setLoaded(true);
+      });
   }, []);
 
   async function login(email, password) {
