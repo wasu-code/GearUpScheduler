@@ -74,12 +74,12 @@ const ServiceForm = ({ serviceId }) => {
   const [date, setDate] = useState(
     new Date(searchParams.get("date") || new Date())
   );
-  const [time, setTime] = useState(searchParams.get("time") || 10);
+  const [hours, setHours] = useState([]);
+  const [time, setTime] = useState(searchParams.get("time"));
   const [isSaving, setSaving] = useState(false);
   const [isSuccess, setSuccess] = useState(
     searchParams.get("isSuccess") || false
   );
-  const [hours, setHours] = useState([]);
   const [services, setServices] = useState();
 
   useEffect(() => {
@@ -201,7 +201,7 @@ const ServiceForm = ({ serviceId }) => {
     return <ServiceSuccess service={service} date={date} time={time} />;
   }
 
-  console.log(hours)
+  console.log(hours);
 
   return (
     <div className="grid grid-cols-2 rounded-md border bg-white mt-4 p-4">
@@ -212,6 +212,7 @@ const ServiceForm = ({ serviceId }) => {
             mode="single"
             selected={date}
             onSelect={(d) => {
+              setTime(null);
               setDate(new Date(d.getTime() + 3600000));
             }}
             className=""
@@ -319,8 +320,9 @@ function ServiceSuccess({ service, date, time }) {
               <p className="text-lg font-bold text-slate-900 mt-4">
                 Wizyta w godzinach:
               </p>
-              <span>{` ${time}:00 - ${Number(time) + service.duration
-                }:00`}</span>
+              <span>{` ${time}:00 - ${
+                Number(time) + service.duration
+              }:00`}</span>
             </div>
           </div>
 
